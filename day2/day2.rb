@@ -94,10 +94,10 @@ puts solution2
 
 =begin
   Nothing special here, we just loop through the arrays to check for inc / dec patterns, 
-  and then check whether the differences between the current value and the previous value is the same.
+  and then check whether the differences between the current value and the previous value is greater than 3.
 
   The only issue is, initially for solution 2, I used the dampener for both indices that are incompatible 
-  and the count is alot higher than the solution. In my mind, we don't really know the current number is imcompatible
-  with a previous value, we don't know which is the one with the problem, so it's best to check both, however it seems
+  and the count is alot higher than the solution. In my mind, we know the current number is imcompatible
+  with a previous value, but we don't know which is the one with the problem, so it's best to check both, however it seems
   the solution only accepts the previous value for removal.
 =end
