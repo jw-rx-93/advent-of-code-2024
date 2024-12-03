@@ -55,6 +55,5 @@ puts solution2()
   But you can try to use your own bucket sort approach by aligning your data samples with the indices, then compact the arrays.
   For the values at the indices themselves, just increment them to account for repeated values. Then using two index pointers,
   just move through the arrays and decrement the values at the indices to 0 before moving to the next index.
-  Now you're time compexity is O(n) with an atrocious space complexityy.
-  This would be O(n) but it's needlessly complicated. Just a thought.
+  Now you're time compexity is O(n). It's needlessly complicated to solve the data sample size tho.
 =end
