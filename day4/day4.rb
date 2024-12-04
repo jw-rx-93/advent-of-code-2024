@@ -44,48 +44,34 @@ def check_diagonal(row, col, r_op, c_op)
   word_count
 end 
 
-
-def check_horizontal(row, col, c_op) 
+def check_xy(row, col, op, xy_targ)
   chr1 = WORDS_MATRIX[row][col]
-  word_count = 0
-  c4 = col + (c_op == "+" ? 3 : - 3)
+  targ = xy_targ == "row" ? row : col 
+  c4 = targ + (op == "+" ? 3 : - 3)
 
-  if c4 >= 0 &&  c4 < COL_COUNT 
-    chr4 = WORDS_MATRIX[row][c4]
+  word_count = 0
+
+  if c4 >= 0 && c4 < (xy_targ == "row" ? ROW_COUNT : COL_COUNT )
+    chr4 = xy_targ == "row" ? WORDS_MATRIX[c4][col] : WORDS_MATRIX[row][c4]
+
     if chr4 == "S"
-      c2 = col + (c_op == "+" ? 1 : -1)
-      c3 = col + (c_op == "+" ? 2 : -2)
-      chr2 = WORDS_MATRIX[row][c2]
-      chr3 = WORDS_MATRIX[row][c3]
+      c2 = targ + (op == "+" ? 1 : -1)
+      c3 = targ + (op == "+" ? 2 : -2)
+
+      if xy_targ == "row" 
+        chr2 = WORDS_MATRIX[c2][col]
+        chr3 = WORDS_MATRIX[c3][col]
+      else 
+        chr2 = WORDS_MATRIX[row][c2]
+        chr3 = WORDS_MATRIX[row][c3]
+      end 
 
       word_count += ((chr1 + chr2 + chr3 + chr4) == "XMAS" ? 1 : 0)
     end
   end 
 
   word_count
-end 
-
-def check_vertical(row, col, r_op)
-  chr1 = WORDS_MATRIX[row][col]
-  word_count = 0
-  r4 = row + (r_op == "+" ? 3 : - 3)
-
-  if r4 >= 0 && r4 < ROW_COUNT
-    chr4 = WORDS_MATRIX[r4][col]
-
-    if chr4 == "S"
-      r2 = row + (r_op == "+" ? 1 : -1)
-      r3 = row + (r_op == "+" ? 2 : -2)
-
-      chr2 = WORDS_MATRIX[r2][col]
-      chr3 = WORDS_MATRIX[r3][col]
-      
-      word_count += ((chr1 + chr2 + chr3 + chr4) == "XMAS" ? 1 : 0)
-    end
-  end 
-
-  word_count
-end 
+end
 
 
 def solution1 
@@ -102,13 +88,13 @@ def solution1
       # bottom right
       word_count += check_diagonal(i, j, "+", "+")
       #left
-      word_count += check_horizontal(i, j, "-")
+      word_count += check_xy(i, j, "-", "col")
       #right
-      word_count += check_horizontal(i, j, "+")
+      word_count += check_xy(i, j, "+", "col")
       #top 
-      word_count += check_vertical(i, j, "-")    
+      word_count += check_xy(i, j, "-", "row")    
       #bottom
-      word_count += check_vertical(i, j, "+")   
+      word_count += check_xy(i, j, "+", "row")   
     end
   end
 
