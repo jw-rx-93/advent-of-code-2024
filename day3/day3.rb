@@ -45,11 +45,7 @@ def solution1
         p5 += 1
       end 
 
-      if valid 
-       num1 = num1.to_i
-       num2 = num2.to_i 
-       accum += (num1 * num2)
-      end 
+      accum += (num1.to_i * num2.to_i) if valid 
       p1, p2, p3, p4 = increment_indices(p5)
     
     else 
@@ -93,13 +89,8 @@ def solution2
         p5 += 1
       end 
 
-      if valid && mul_mode
-       num1 = num1.to_i
-       num2 = num2.to_i 
-       accum += (num1 * num2)
-      end 
+      accum += (num1.to_i * num2.to_i) if valid && mul_mode
       p1, p2, p3, p4 = increment_indices(p5)
-
     elsif text == "do()"
       p1, p2, p3, p4 = increment_indices(p4 + 1)
       mul_mode = true 
