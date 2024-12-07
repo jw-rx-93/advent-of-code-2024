@@ -21,37 +21,26 @@ end
 
 DATA =  extract_data_keys
 
-class TreeNode
-  attr_accessor :num, :total, :next_plus, :next_mul, :next_concat
-
-  def initialize(num)
-    @num = num
-    @next_plus = nil 
-    @next_mul = nil
-    @next_concat = nil
-  end 
-end 
-
 
 def build_tree(dataset, currentNum, currentIdx, targetNum, concat = false)
-  node = TreeNode.new(currentNum) 
-
-  
   $stored.add(targetNum) if targetNum == currentNum  && currentIdx == dataset.length - 1
  
   next_index = currentIdx + 1
-  return node if next_index >= dataset.length 
+  return if next_index >= dataset.length 
 
   next_val = dataset[next_index]
   next_plus = currentNum + next_val
   next_mul = currentNum * next_val
   next_concat = (currentNum.to_s + next_val.to_s).to_i  if concat 
   
-  node.next_plus = build_tree(dataset, next_plus, currentIdx + 1, targetNum, concat)
-  node.next_mul = build_tree(dataset, next_mul, currentIdx + 1, targetNum, concat)
-  node.next_concat = build_tree(dataset, next_concat, currentIdx + 1, targetNum, concat) if concat
+  #optimization block 
+  stillPossible = dataset[next_index + 1].nil? || dataset[next_index + 1] == 1
+  return if !stillPossible && (next_plus == targetNum || next_mul == targetNum || next_concat == targetNum) 
+  #end
 
-  node 
+  build_tree(dataset, next_plus, currentIdx + 1, targetNum, concat) if next_plus <= targetNum
+  build_tree(dataset, next_mul, currentIdx + 1, targetNum, concat) if next_mul <= targetNum
+  build_tree(dataset, next_concat, currentIdx + 1, targetNum, concat) if concat && next_concat <= targetNum
 end
 
 
@@ -61,7 +50,6 @@ def solution1
     target = dataset[0]
     build_tree(dataset, dataset[1], 1, target)
   end 
-
 
   $stored.to_a.inject(0, :+)
 end 
@@ -76,12 +64,17 @@ def solution2
   $stored.to_a.inject(0, :+)
 end
 
+
 $stored = Set.new([])
 puts solution1
 $stored = Set.new([])
 puts solution2
 
 =begin
-  Brute forcing using a tree. Essentially the problem can be thought off as a tree with branches leading to next operation. So we can effectively permutate the solution.
+  Essentially the problem can be thought off as a tree with branches leading to next operation. So we can effectively permutate the solution.
   We have the option to do a dfs afterwards but it is not neccessary since we can just stored relevant numbers in a set when building the tree.
-end
+
+  We can do slight optimizations by adding conditions that make sense, for example, if you get your target sum, and if you are not at the end of your array,
+  then you have to check if the remaining numbers are 1s otherwise it is not possible to solve. [This can be leveraged further if you are really good at math, 
+  and implement a theorem that the remaining numbers cannot possible solve your problem]
+=end
