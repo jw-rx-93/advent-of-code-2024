@@ -76,5 +76,5 @@ puts solution2
 
   We can do slight optimizations by adding conditions that make sense, for example, if you get your target sum, and if you are not at the end of your array,
   then you have to check if the remaining numbers are 1s otherwise it is not possible to solve. [This can be leveraged further if you are really good at math, 
-  and implement a theorem that the remaining numbers cannot possible solve your problem]
+  and implement a theorem proves that the remaining numbers are not valid]
 =end
