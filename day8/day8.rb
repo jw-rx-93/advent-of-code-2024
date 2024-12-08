@@ -73,15 +73,11 @@ def solution2
   populate_ref_table
   $ref.each do |node_type, nodes| 
     i = 0 
+    nodes.each {|x, y|$pos.add("#{x},#{y}")} if nodes.length > 0 
+  
     while i < nodes.length 
       j = i + 1 # we want to check subsequent nodes because we already seen previous node, calculations were done
       curr_row, curr_col = nodes[i]
-
-      if nodes.length > 0 
-        nodes.each do |x, y|
-          $pos.add("#{x},#{y}")
-        end
-      end
 
       while j < nodes.length
         row, col = nodes[j] 
