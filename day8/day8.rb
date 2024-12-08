@@ -17,11 +17,12 @@ end
 
 
 DATA = extract_data
-$pos = Set.new([]) #to track positions where antinode is already created so we don't double count overlaps
 
 
 def populate_ref_table 
   $ref = {} 
+  $pos = Set.new([]) 
+
   DATA.each_with_index do |row, i|
     row.each_with_index do |val, j|
       next if val == "."
@@ -36,9 +37,7 @@ def validate_position(x, y, node_type)
   if x >= 0 && x < DATA.length && y >= 0 && y < DATA.first.length 
     val = DATA[x][y]
     valid = true 
-    if val != node_type 
-      $pos.add("#{x},#{y}")
-    end
+    $pos.add("#{x},#{y}") if val != node_type 
   end
 
   valid 
@@ -85,15 +84,13 @@ def solution2
         y_diff = col - curr_col
 
         multiplier = 1 
-        v1 = true
-        v2 = true 
+        v1, v2 = true
 
         while v1 || v2 
           v1 = validate_position(curr_row + (-1*multiplier*x_diff), curr_col + (-1*multiplier*y_diff), node_type) 
           v2 = validate_position(row +  multiplier*x_diff, col + multiplier*y_diff, node_type)
           multiplier += 1
         end
-
 
         j += 1
       end
