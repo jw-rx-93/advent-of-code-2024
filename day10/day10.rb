@@ -1,4 +1,6 @@
 require 'benchmark'
+require 'set'
+
 PREFIX = 'test'
 
 def extract_data  
@@ -21,19 +23,18 @@ ROW_BOUND = GRAPH.length
 COL_BOUND = GRAPH[0].length
 
 class Node 
-  attr_accessor :val, :visited, :score
+  attr_accessor :val, :visited, :score, :peaks
   def initialize(val)
     @val = val 
     @visited = false 
     @score = 0
+    @peaks = []
   end
 end 
 
 def form_table 
   $graph = []
   $starting_pos = []
-  $count = 0
-  $positions_to_clear = []
 
   GRAPH.each_with_index do |row, idx|
     temp = []
@@ -59,32 +60,35 @@ end
 def traverse_tree(idx, jdx)
   current_node = $graph[idx][jdx]
 
-  return if current_node.visited 
-
+  return current_node.peaks if current_node.visited 
+    
   current_node.visited = true 
-  $positions_to_clear << [idx, jdx] 
 
   if current_node.val == 9 
-    $count += 1 
-    return
+    current_node.peaks = ["#{idx},#{jdx}"]
+    return  ["#{idx},#{jdx}"]
   end
 
+
+  peaks = []
+
   [[idx + 1, jdx], [idx - 1, jdx], [idx, jdx + 1], [idx, jdx - 1]].each do |pairs|
-    traverse_tree(pairs[0], pairs[1]) if valid_node(pairs[0], pairs[1], current_node.val)
+    peaks.concat(traverse_tree(pairs[0], pairs[1])) if valid_node(pairs[0], pairs[1], current_node.val)
   end
+  
+  current_node.peaks = peaks 
+  peaks
 end
 
 
 def traverse_tree_2(idx, jdx)
   current_node = $graph[idx][jdx]
 
-
   return current_node.score if current_node.visited
 
   current_node.visited = true 
 
   if current_node.val == 9 
-    $count += 1 
     current_node.score = 1
     return 1
   end
@@ -105,15 +109,9 @@ def solution1
   sum = 0
   $starting_pos.each do |pos| 
     idx, jdx = pos 
-    traverse_tree(idx, jdx)
-
-    while $positions_to_clear.length > 0
-      i, j = $positions_to_clear.pop 
-      $graph[i][j].visited = false
-    end
-
-    sum += $count
-    $count = 0
+    peaks = traverse_tree(idx, jdx)
+    t = Set.new(peaks).length
+    sum += t
   end 
 
   sum
@@ -147,13 +145,5 @@ t = Benchmark.measure {
 puts t.real
 
 =begin 
-  Simple DFS algorithm, the only differene is part1, we aren't looking for total unique paths, but number of different peaks,
-  so can simple just skip any paths we already been to. Unfortunately, I couldn't grasp how I could memoize it. For example
-  let's say in starting pos 1, I already marked the paths I taken, such for for starting pos 2, I could check if the path
-  has been visted, and I can use the score of that path...however this has a problem. 
-  
-  Let's say at some value = 2, I have it marked with a score 3, and I add it to the my current counter
-  However let's say later on in a different path I hit some value 8, which shares the same path as the value = 2 I saw earlier,
-  how would I go about validating this position so I don't add to my counter? In fact what this idea does is solve the number
-  of unique paths which is the solution to part 2, a dfs with memoization.
+  Both are the same algorithm, just whatever we're storing for memoization is different
 =end
