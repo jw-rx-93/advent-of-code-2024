@@ -1,7 +1,6 @@
 require 'benchmark'
 PREFIX = 'test'
 
-
 def extract_data  
   graph = []
 
@@ -21,10 +20,8 @@ GRAPH = extract_data
 ROW_BOUND = GRAPH.length 
 COL_BOUND = GRAPH[0].length
 
-
 class Node 
   attr_accessor :val, :visited, :score
-
   def initialize(val)
     @val = val 
     @visited = false 
@@ -36,6 +33,7 @@ def form_table
   $graph = []
   $starting_pos = []
   $count = 0
+  $positions_to_clear = []
 
   GRAPH.each_with_index do |row, idx|
     temp = []
@@ -57,7 +55,6 @@ def valid_node(n_idx, n_jdx, current_val)
   true
 end
 
-$positions_to_clear = []
 
 def traverse_tree(idx, jdx)
   current_node = $graph[idx][jdx]
@@ -151,7 +148,12 @@ puts t.real
 
 =begin 
   Simple DFS algorithm, the only differene is part1, we aren't looking for total unique paths, but number of different peaks,
-  so can simple just skip any paths we already been to.
-
-  For part two, it's a dfs with memoziation, much optimized than part 1 actually
+  so can simple just skip any paths we already been to. Unfortunately, I couldn't grasp how I could memoize it. For example
+  let's say in starting pos 1, I already marked the paths I taken, such for for starting pos 2, I could check if the path
+  has been visted, and I can use the score of that path...however this has a problem. 
+  
+  Let's say at some value = 2, I have it marked with a score 3, and I add it to the my current counter
+  However let's say later on in a different path I hit some value 8, which shares the same path as the value = 2 I saw earlier,
+  how would I go about validating this position so I don't add to my counter? In fact what this idea does is solve the number
+  of unique paths which is the solution to part 2, a dfs with memoization.
 =end
