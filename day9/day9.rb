@@ -40,6 +40,8 @@ def form_seqeunce
   sequence
 end
 
+
+
 def solution1
   sequence = form_seqeunce
   left = 0
@@ -59,7 +61,7 @@ def solution1
 end
 
 
-def solution2(sequence)
+def solution2_brute_force(sequence)
   # going backwards in sequence
   # get count of each number 
 
@@ -129,9 +131,94 @@ def solution2(sequence)
 end 
 
 
+
+def solution2_queue(sequence)
+  # preferably we have a PQ
+  list_of_queues = []
+  collection = []
+    # ruby can extend array like this, we're expected to have incremental id anyway
+  sequence.each_with_index do |val, idx|
+    next if val == "."
+    collection[val] ||= [idx, 0]
+    collection[val][1] += 1
+  end
+
+  idx = 0
+  while idx < sequence.length 
+    if sequence[idx] == "."
+      cpy_idx = idx 
+      cpy_idx += 1 while sequence[cpy_idx] == "." && cpy_idx < sequence.length 
+      list_of_queues[cpy_idx - idx] ||= []
+      list_of_queues[cpy_idx - idx].push(idx)
+      idx = cpy_idx
+    else 
+      idx += 1
+    end
+  end
+
+  list_of_queues = list_of_queues.map{|val| val&.sort&.reverse }
+  b_idx = collection.length - 1
+
+  while b_idx > 0 
+    c_idx, space = collection[b_idx]
+
+    # we want to find the queue with the smallest index to dequeue value from
+    min_idx = sequence.length 
+    queue_idx = 0
+
+    list_of_queues.each_with_index do |heap, _q_idx|
+      next if heap.nil? || _q_idx < space
+      # not really a heap cuz we don't have an implementation
+      idx_of_block = heap.last 
+
+      next if !idx_of_block
+
+      if idx_of_block < min_idx 
+        queue_idx = _q_idx 
+        min_idx = idx_of_block
+      end
+    end
+
+    if queue_idx > 0 && list_of_queues[queue_idx] 
+      heap = list_of_queues[queue_idx]
+      swap_idx = heap.pop 
+      diff = 0
+
+      diff = queue_idx - space if queue_idx > space 
+       
+      if c_idx > swap_idx
+        until space == 0 
+          sequence[swap_idx] = b_idx 
+          sequence[c_idx] = "x"
+          swap_idx += 1
+          c_idx += 1
+          space -= 1
+        end
+      end
+
+      if diff > 0 && c_idx > swap_idx
+        list_of_queues[diff] ||= []
+        list_of_queues[diff].push(swap_idx)
+        # we don't have to do this if we have a priority queue
+        list_of_queues[diff] = list_of_queues[diff].sort.reverse
+      end
+    end
+
+    b_idx -= 1
+  end 
+
+
+  idx = -1
+  sequence.inject(0) do |accum, val|
+    idx += 1
+    accum += ((val == "." || val == "x") ? 0 : val * idx)
+  end
+end
+
+
 print solution1 
 puts
-print solution2(form_seqeunce)
+print solution2_queue(form_seqeunce)
 puts
 
 
