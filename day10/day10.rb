@@ -1,7 +1,7 @@
 require 'benchmark'
 require 'set'
 
-PREFIX = 'test'
+PREFIX = 'sample'
 
 def extract_data  
   graph = []
