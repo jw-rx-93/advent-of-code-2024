@@ -1,4 +1,6 @@
 require 'set'
+require 'benchmark'
+
 PREFIX = "test"
 
 class Node 
@@ -156,4 +158,9 @@ def solution3
 end
 
 #puts solution1
-#puts solution3
+
+t = Benchmark.measure do 
+  puts solution3
+end
+
+puts t.real
