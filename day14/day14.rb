@@ -83,67 +83,65 @@ def sol1_math(row_bound, col_bound, blinks = 100)
 end
 
 
+def validate_coordinates(coordinates, target,  &block) 
+  target.each do |coor|
+    r1, c1 = coor 
+    x = coordinates["#{r1},#{c1}"]
+    y = coordinates["#{r1 + 1},#{c1}"]
+    z = coordinates["#{r1 + 2},#{c1}"]
+    return false unless block.call([x, y, z])
+  end
 
-def solution2(row_bound, col_bound, iteration = 0)
-  while iteration < 9999
+  true 
+end
+
+def solution2_v2(row_bound, col_bound, iteration = 0)
+  while iteration < 9999 
     coordinates = get_coordinates(row_bound, col_bound, iteration)
-    table = []
-    (0...row_bound).each_with_index do |_, i|
-      t = []
-      (0...col_bound).each_with_index do |_, j|
-        t.push(coordinates["#{i},#{j}"] > 0 ? "#" : ".")
+    coordinates.each do |k, v|
+      r, c = k.split(",").map(&:to_i)
+      # check for trunk 
+
+      v0 = [r, c - 1] # should not exist
+      v1 = [r, c] # should exist
+      v2 = [r, c + 1] # should exist
+      v3 = [r, c + 2] # should exist
+      v4 = [r, c + 3] # should not exist 
+
+
+      desired_coordinates = [v1, v2, v3] 
+      undesired_coordiates = [v0, v4]
+
+      valid_combination = validate_coordinates(coordinates, desired_coordinates) do |coords| 
+        coords.all?{|val| val > 0 } 
       end
-      table << t 
-    end 
 
+      valid_combination &= validate_coordinates(coordinates, undesired_coordiates) do |coords| 
+         coords.all?{|val| val == 0 } 
+      end
 
-    table.each_with_index do |row, i|
-      t = 0
-
-      row.each_with_index do |v, j| 
-        if v == "#"
-          t += 1
-        elsif t == 3
-          # check row above
-          # check bottom two 
-          # we're checking for the trunk
-
-          v0 = [i, j - 4]
-          v1 = [i, j - 3]
-          v2 = [i, j - 2]
-          v3 = [i, j - 1]
-          v4 = [i, j]
-
-          if (i + 2) < table.length  && j >= 4
-            str0 = ""
-            str1 = ""
-            str2 = "" 
-            
-            [v0, v1, v2, v3, v4].each do |coor|
-              r, c = coor 
-              str0 += table[r][c]
-              str1 += table[r + 1][c]
-              str2 += table[r + 2][c]
-            end
-
-            if str0 == ".###." && str0 == str1 && str0 == str2
-              puts "ITERATION = #{iteration}"
-              table.each { |row| puts row.join("") }
-              return 
-            end
+      if valid_combination
+        puts "ITERATION = #{iteration}"
+       
+        (0...row_bound).each do |row|
+          str = ""
+          (0...col_bound).each do |col|
+            coord = "#{row},#{col}"
+            str += coordinates[coord] > 0 ? "#" : "."
           end
+          puts str
+        end
 
-          t = 0 # cuz this only breaks if current isn't a #
-        else 
-          t = 0
-        end 
+         return iteration
       end
-    end 
+    end
 
     iteration += 1
   end
+
+  -1
 end
 
 
 puts sol1_math(ROW_BOUND, COL_BOUND)
-puts solution2(ROW_BOUND, COL_BOUND, 8000)
+puts solution2_v2(ROW_BOUND, COL_BOUND, 0)
