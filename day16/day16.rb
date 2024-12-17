@@ -1,6 +1,6 @@
 require 'set'
 
-PREFIX = "sample"
+PREFIX = "test"
 
 
 def extract_data
@@ -120,19 +120,28 @@ end
 
 # solution_1
 
+
+# solution 2 requires that the minimal cost is known first
+# because we know the minimal cost now,
+# we can do a simple dfs to find ALL the paths that would add up to our minimal score when we end up at E
+# those are considered the best paths 
+# we can keep track of unique nodes simply by using a set 
+# We still need to track the min score of a particular position such that it doesn't exceed 
+# the final score at the end because that means that node is impossible to reach the end.
+
 def dfs(current_pos, current_weight, current_path, dir)
   # path is no longer valid cuz it exceeds endpoint
   y, x = current_pos.map(&:to_i)
   undir_node = "#{y},#{x}"
 
-  if MAP[y][x] == "E"
-    current_path.each{|p| $paths_taken.add(p) }
+  if MAP[y][x] == "E" && $min_score == current_weight
+    current_path.to_a.each{|p| $paths_taken.add(p) }
     return 
   end
 
   return if MAP[y][x] == "#" || current_weight > $min_score  || current_weight > $all_min_scores[undir_node + ",#{dir}"]
 
-  current_path << undir_node
+  current_path.add(undir_node)
 
   next_nodes = get_next_nodes([y, x])
   next_nodes.each do |next_node|
@@ -140,7 +149,7 @@ def dfs(current_pos, current_weight, current_path, dir)
     _y = _y.to_i 
     _x = _x.to_i 
 
-    next if MAP[_y][_x] == "#" # A bit redundant but w/e 
+    next if current_path.include?("#{_y}#{_x}")
     weight = 1 + current_weight
     weight += get_score_increment(dir, _dir)
 
@@ -153,7 +162,7 @@ def solution_2
   $min_score, $all_min_scores = solution_1
   $paths_taken = Set.new([])
 
-  dfs(START_POS.dup, 0, [], "e")
+  dfs(START_POS.dup, 0, Set.new([]), "e")
 
   return $paths_taken.to_a.length + 1 # no idea why I need a + 1, starting position should be accounted for 
 end
@@ -161,18 +170,18 @@ end
 puts solution_2
 
 
-$all_min_scores.each do |node, val|
-  y, x, _ = node.split(",")
-  y = y.to_i 
-  x = x.to_i 
+# $all_min_scores.each do |node, val|
+#   y, x, _ = node.split(",")
+#   y = y.to_i 
+#   x = x.to_i 
   
-  if ["S", "E", "."].include?(MAP[y][x])
-    MAP[y][x] = val
-  else
-    MAP[y][x] = [MAP[y][x], val].min
-  end
-end
+#   if ["S", "E", "."].include?(MAP[y][x])
+#     MAP[y][x] = val
+#   else
+#     MAP[y][x] = [MAP[y][x], val].min
+#   end
+# end
 
-MAP.each do |row|
-  print row.map{|v| (v == Float::INFINITY ? "INFINITY" : "#{v}      ")[0...5]}.join(" "), "\n"
-end
+# MAP.each do |row|
+#   print row.map{|v| (v == Float::INFINITY ? "INFINITY" : "#{v}      ")[0...5]}.join(" "), "\n"
+# end
