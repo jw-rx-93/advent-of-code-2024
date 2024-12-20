@@ -1,4 +1,5 @@
 require 'set'
+require 'benchmark'
 
 def extract_data
   wordSet = Set.new([])
@@ -106,8 +107,6 @@ def solution_2
     $viable = false
     $use_viable = false
     $memo = {}
-
-    puts pattern
     total = word_dfs(0, max_length, pattern, wordSet)
     count += total
   end
@@ -116,5 +115,13 @@ def solution_2
 end
 
 
-puts solution_1
-puts solution_2
+t1 = Benchmark.measure do
+   puts solution_1
+end 
+
+t2 = Benchmark.measure do 
+  puts solution_2
+end
+
+puts t1.real
+puts t2.real
