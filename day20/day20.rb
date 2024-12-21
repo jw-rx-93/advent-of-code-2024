@@ -206,11 +206,13 @@ def solution_2
   extract_data
   max_distance, path = find_known_path_measurement
   counter = Hash.new(0)
-  
-  path.each do |n1|
-    path.each do |n2|
+  path_set = Set.new(path)
+
+  path.each_with_index do |n1, i|
+    path[i...path.length].each do |n2|
       y1, x1 = n1 
       y2, x2 = n2 
+      
       manhattan_distance = (y1 - y2).abs + (x1 - x2).abs 
       if manhattan_distance <= 20 
           sp_dist = $visitable_points["#{y1},#{x1}"]
