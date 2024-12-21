@@ -1,4 +1,5 @@
 require 'set'
+require 'benchmark'
 require_relative "../helpers"
 
 
@@ -165,7 +166,6 @@ def solution_2
     end
 
     depth = 1
-    possible_endpoints = 0
     
     while queue.length > 0 && depth <= 20
       while queue.length > 0 
@@ -181,7 +181,6 @@ def solution_2
           total_distance = (max_distance - sp_dist) + ep_dist + depth
           if total_distance < max_distance
             counter[max_distance - total_distance] += 1 
-            possible_endpoints += 1
           end
         end
 
@@ -218,4 +217,9 @@ def solution_2
   count
 end
 
-puts solution_2
+
+t = Benchmark.measure do 
+  puts solution_2
+end
+
+puts t.real
