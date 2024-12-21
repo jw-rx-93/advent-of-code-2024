@@ -135,23 +135,11 @@ def solution_2
   max_distance, path = find_known_path_measurement
   counter = Hash.new(0)
 
-  # sp and ep with the same distance are the same cheat
-  # in otherwords it doesn't matter how many steps it takes
-  # + 15 steps to 0,0 and 3,3 is the same as like 3 steps
-
-  # also keep track of start,endpoint,count because these are teh same cheat
-  # each node has a 20 possiblitlies how many count left for the cheat, 
-  # and possible end points with said count, we can memoize this 
-
   counter = Hash.new(0)
   $replacable_blocks_set = Set.new($replacable_blocks)
-  $memo = {} # => root => { depth => possible_outcomes }
 
 
   path.each do |start_coor|
-    # cheats only start if we're connected to a # block
-    # we're going to test every adjacent # block 
-    # and do a dfs for them to see if they ever reach an endpoint "."
     y, x = start_coor
 
 
