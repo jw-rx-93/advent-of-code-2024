@@ -130,18 +130,14 @@ end
 
 # puts solution_1
 
-def solution_2
+def solution_2_bf
   extract_data
   max_distance, path = find_known_path_measurement
   counter = Hash.new(0)
-
-  counter = Hash.new(0)
   $replacable_blocks_set = Set.new($replacable_blocks)
-
 
   path.each do |start_coor|
     y, x = start_coor
-
 
     queue = Queue.new
     t_queue = Queue.new 
@@ -204,6 +200,42 @@ def solution_2
 
   count
 end
+
+
+def solution_2 
+  extract_data
+  max_distance, path = find_known_path_measurement
+  counter = Hash.new(0)
+  
+  path.each do |n1|
+    path.each do |n2|
+      y1, x1 = n1 
+      y2, x2 = n2 
+      manhattan_distance = (y1 - y2).abs + (x1 - x2).abs 
+      if manhattan_distance <= 20 
+          sp_dist = $visitable_points["#{y1},#{x1}"]
+          ep_dist = $visitable_points["#{y2},#{x2}"]
+
+          total_distance = (max_distance - sp_dist) + ep_dist + manhattan_distance
+          counter[max_distance - total_distance] += 1  if total_distance < max_distance
+      end
+    end
+  end
+
+  count = 0
+  counter.to_a.sort_by{|p| p[0]}.each do |p|
+    k, v = p
+
+    next if k == 0
+    if k >= (!!ENV['TEST'] ? 100 : 50)
+      puts "There are #{v} that saves #{k} picoseconds"
+      count += v
+    end
+  end
+
+  count
+end
+
 
 
 t = Benchmark.measure do 
