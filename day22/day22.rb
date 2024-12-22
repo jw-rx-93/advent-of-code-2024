@@ -47,7 +47,7 @@ def solution2
 
   data.each do |num|
     v = num 
-    local_freq = Hash.new(0)
+    seen = Set.new
     prev_val = num % 10
     seq = []
 
@@ -62,10 +62,15 @@ def solution2
       # multiple same frequency can appear, but we want to take the one with the higest weight
       # this guarantees only unique sequences with the max values
       seq_key = seq.join(",")
-      local_freq[seq_key] = curr_val if seq.length == 4 && local_freq[seq_key] == 0
+      
+      if seq.length == 4 && !seen.include?(seq_key)
+        $frequency_table[seq_key] += curr_val
+        seen << seq_key
+      end
+
       prev_val = curr_val
     end
-    local_freq.each {|k, v| $frequency_table[k] += v }
+  
   end
 
   $frequency_table.to_a.sort_by{|v| v.last}.last
@@ -73,4 +78,4 @@ end
 
 # puts solution1
 
-# print solution2
+print solution2
