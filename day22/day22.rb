@@ -49,7 +49,7 @@ def solution2
     v = num 
     seen = Set.new
     prev_val = num % 10
-    seq = []
+    seq = [] # sliding window
 
     2000.times do 
       v = run_math(v)
@@ -58,9 +58,6 @@ def solution2
       seq_val = curr_val - prev_val
       seq << seq_val
       seq.shift if seq.length > 4 
-
-      # multiple same frequency can appear, but we want to take the one with the higest weight
-      # this guarantees only unique sequences with the max values
       seq_key = seq.join(",")
       
       if seq.length == 4 && !seen.include?(seq_key)
