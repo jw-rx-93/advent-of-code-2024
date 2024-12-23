@@ -57,6 +57,7 @@ def solution2
 
       seq_val = curr_val - prev_val
       seq << seq_val
+      #ruby shift is optimized to be ~ O(1) on average, use a queue if you are using other lingos
       seq.shift if seq.length > 4 
       seq_key = seq.join(",")
       
