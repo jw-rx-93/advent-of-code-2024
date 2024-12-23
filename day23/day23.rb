@@ -61,7 +61,7 @@ def solution2
   patterns = Hash.new(0)
 
   $ref_table.each do |k, connections|
-    matches = connections + [k]
+    matches = Set.new(connections + [k])
     freq = Hash.new()
 
     connections.each do |_k|
@@ -83,7 +83,7 @@ def solution2
   patterns.to_a.sort_by{|p| p.last }.last
 end
 
-puts solution1
+# puts solution1
 puts solution2
 
 
