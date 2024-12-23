@@ -77,12 +77,13 @@ def solution2
 
     _p = freq.to_a.sort_by{|p| p.last.size }.last 
     key = _p.last.to_a.sort.join(",")
-    patterns[key] += key.length
+    patterns[key] += 1
   end
 
   patterns.to_a.sort_by{|p| p.last }.last
 end
 
+puts solution1
 puts solution2
 
 
