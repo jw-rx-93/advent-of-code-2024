@@ -1,4 +1,5 @@
 require 'set'
+require 'benchmark'
 
 
 def extract_data
@@ -56,8 +57,6 @@ end
 
 def solution2
   $ref_table = extract_data
-
-  valid_points = []
   patterns = Hash.new(0)
 
   $ref_table.each do |k, connections|
@@ -83,7 +82,17 @@ def solution2
   patterns.to_a.sort_by{|p| p.last }.last
 end
 
-# puts solution1
-puts solution2
+t = Benchmark.measure do
+  puts solution1
+end
+
+puts t.real
+
+t = Benchmark.measure do 
+  puts solution2
+end
+
+puts t.real
+
 
 
