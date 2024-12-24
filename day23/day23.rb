@@ -57,6 +57,7 @@ end
 
 def solution2
   $ref_table = extract_data
+
   patterns = Hash.new(0)
 
   $ref_table.each do |k, connections|
